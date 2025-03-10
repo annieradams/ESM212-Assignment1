@@ -18,22 +18,25 @@ knitr::opts_chunk$set(echo = TRUE)
 	library(dplyr)
 ```
 
-#### Read in presence- absecse data
+
+## 1. Species Richness
+
 
 ```{r}
+# Read in presence- absence data
 grasspa <- read.csv("data/grassland_dat_pa.csv",header=TRUE)
 padat <- grasspa[,4:40]		#plot x species P/A matrix in format for vegan analysis
 ```
 
-#### Read in Cover data
 ```{r}
+# Read in Cover data
 grasscov <- read.csv("data/grassland_dat_cover.csv",header=TRUE)
 covdat <- grasscov[,4:40]	#plot x species cover matrix in format for vegan analysis
 ```
 
 
 
-#### Create exact species accumulation curves for 4 plots using 10 subplots
+##### Create exact species accumulation curves for 4 plots using 10 subplots
 
 ```{r}
 accum1 <- specaccum(padat[1:10,]) 	#plot 1, subplots 1-10
@@ -42,6 +45,15 @@ accum3 <- specaccum(padat[25:34,])	#plot 3, subplots 1-10
 accum4 <- specaccum(padat[37:46,])	#plot 4, subplots 1-10
 
 ```
+
+#### Extend the X axis and add 2 new points to include any additional species encountered in subplots 11 and 12
+
+
+```{r}
+
+```
+
+
 
 
 #### Plot accumulation curves for each plot
@@ -58,12 +70,51 @@ text(10.1,18,"N2") #second north plot
 ```
 
 
+
+
+
 #### Plot single accumulation curve using 40 subplots
 
 ```{r}
 accum_allsubplots <- specaccum(padat[c(1:10,13:22,25:34,37:46),])
 plot(accum_allsubplots,xlab="subplots",ylab="species")
 ```
+
+#### Using the program specpool in vegan, what is the Chao estimate of the number of grassland species in the local species pool based on 40 1x0.25m subplots?
+
+```{r}
+
+```
+
+
+
+
+#### Repeat 1b, but for native species only.
+
+```{r}
+
+```
+
+
+
+#### Repeat 1b, but for exotic species only.
+
+
+```{r}
+
+```
+
+
+
+
+
+**Question : Question. How do accumulation curves and estimated sizes of species pools compare for native compared to exotic species**
+
+**Answer: Your answer here. **. 
+
+
+## Communit Dissimilarity
+
 
 #### Calculate Bray-Curtis dissimilarity between plots
 
@@ -92,6 +143,7 @@ plots_bray_diss
 #### Analyze cover data
 ```{r}
 #Calculate area-weighted cover, total area sampled = 10 *0.25 + 2*2.5 = 7.5 sq m
+
 p1_cov <- (2.5/7.5)*apply(covdat[1:10,],2,mean) + 
 			(5/7.5)*apply(covdat[11:12,],2,mean)
 p2_cov <- (2.5/7.5)*apply(covdat[13:22,],2,mean) + 
@@ -111,6 +163,29 @@ plot(plots_hclust)
 plots_hclust_pa <- hclust(plots_bray_diss,method="average")
 plot(plots_hclust_pa)
 ```
+#### Repeat 2a, but for native species only
+
+```{r}
+
+```
+
+
+
+#### Repeat 2b, but for native species only
+
+```{r}
+
+```
+
+
+**Question:  Questions: Briefly discuss the patterns of plot dissimilarity based on P/A compared to cover data. How do they differ and why? Next, briefly discuss patterns of plot dissimilarity based on all species vs. native species only.**
+
+**Answer: Your answer here.**
+
+
+## Community Evenness
+
+
 #### Analyze plot diversity
 
 ```{r}
@@ -119,3 +194,18 @@ plots_simpson <- diversity(plots_cov,index="simpson")	#simpson diversity
 plots_richness <- specnumber(plots_cov)					#species richness
 ```
 
+
+#### Repeat 3a for native species only and for exotic species only 
+```{r}
+
+```
+
+#### Repeat 3b for native species only and for exotic species only.
+```{r}
+
+```
+
+
+**Question: Questions: How does the rank order of diversity among plots vary depending on whether you use the Shannon or Simpson index? How does the pattern of native species diversity compare to exotic species diversity?**
+
+**Answer: Your answer here.**
