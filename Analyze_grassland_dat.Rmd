@@ -1,26 +1,36 @@
 ---
-title: "Analyze Grassland Data"
-author: "Annie Adams"
+title: "Analyzing plant community diversity and dissimilarity"
+subtitle: "ESM 212 Exercise #1"
+author: "your name here"
 date: "2025-03-07"
-output: html_document
+output: pdf_document
 ---
 
+The purpose of this exercise is to reinforce some of the field activities, readings, and lectures related to plant community sampling. Please read the instructions carefully and answer all questions. You can knit this to a pdf or insert your figures, tables and answers into the .docx document and then upload to canvas page. This is meant to be useful and interesting, not make-work. Please let me know if you have any questions or if the instructions are not clear and I will try to clarify asap. Please show your work by also sending me your spreadsheet calculations or R source code.
+
+## About the data:
+
+-   File grassland_dat_pa.csv contains data from your first field trip. The rows are the individual subplots. Columns include plot number, subplot number, subplot area, and species presence (1) or absence (0) rating for 37 species recorded in the plots. By convention, species are abbreviated using the first two letters of the genus and first two letters of the species names.
+-   File grassland_dat_cover.csv is in the same format but records species cover rather than presence/absence.
+-   Full names and whether the species is native (1) or exotic (0) are provided on the worksheet grassland_common_species_ex1.csv
+-   R scripts for reading in the data and using the vegan package to examine species accumulation curves, dissimilarity and diversity are included in the file analyze_grassland_dat.txt. You can execute (source) this file in R to get started.
+
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 ```
 
 #### Install and Load packages
 
 ```{r}
+  options(repos = c(CRAN = "https://cloud.r-project.org"))
+
 	install.packages("vegan")
 	library(vegan)
 	library(tidyr)
 	library(dplyr)
 ```
 
-
 ## 1. Species Richness
-
 
 ```{r}
 # Read in presence- absence data
@@ -34,9 +44,7 @@ grasscov <- read.csv("data/grassland_dat_cover.csv",header=TRUE)
 covdat <- grasscov[,4:40]	#plot x species cover matrix in format for vegan analysis
 ```
 
-
-
-##### Create exact species accumulation curves for 4 plots using 10 subplots
+1a. Plot the accumulated number of species recorded in the 10 subplots for each plot. (R script already does this for you).
 
 ```{r}
 accum1 <- specaccum(padat[1:10,]) 	#plot 1, subplots 1-10
@@ -46,17 +54,15 @@ accum4 <- specaccum(padat[37:46,])	#plot 4, subplots 1-10
 
 ```
 
-#### Extend the X axis and add 2 new points to include any additional species encountered in subplots 11 and 12
-
+#### 1a (cont.) Now, Extend the X axis and add 2 new points to include any additional species encountered in subplots 11 and 12
 
 ```{r}
 
 ```
 
-
-
-
 #### Plot accumulation curves for each plot
+
+1b. Plot the accumulated number of species recorded in all 40 1x0.25m subplots. (R script already does this for you).
 
 ```{r}
 plot(accum1,ylim=c(0,20),xlab="subplots",ylab="species")
@@ -69,10 +75,6 @@ text(10.1,16,"S") #South plot
 text(10.1,18,"N2") #second north plot
 ```
 
-
-
-
-
 #### Plot single accumulation curve using 40 subplots
 
 ```{r}
@@ -80,43 +82,33 @@ accum_allsubplots <- specaccum(padat[c(1:10,13:22,25:34,37:46),])
 plot(accum_allsubplots,xlab="subplots",ylab="species")
 ```
 
-#### Using the program specpool in vegan, what is the Chao estimate of the number of grassland species in the local species pool based on 40 1x0.25m subplots?
+#### 1b (cont.) Using the program specpool in vegan, what is the Chao estimate of the number of grassland species in the local species pool based on 40 1x0.25m subplots?
 
 ```{r}
 
 ```
 
-
-
-
-#### Repeat 1b, but for native species only.
+#### 1c. Repeat 1b, but for native species only.
 
 ```{r}
 
 ```
 
-
-
-#### Repeat 1b, but for exotic species only.
-
+#### 1d. Repeat 1b, but for exotic species only.
 
 ```{r}
 
 ```
-
-
-
-
 
 **Question : Question. How do accumulation curves and estimated sizes of species pools compare for native compared to exotic species**
 
-**Answer: Your answer here. **. 
+**Answer: Your answer here.** .
 
+## 2. Communit Dissimilarity
 
-## Communit Dissimilarity
+There are many indices for calculating the similarity or dissimilarity of community samples. Here you will compare sample dissimilarity based on species presence-absence data vs. species cover data
 
-
-#### Calculate Bray-Curtis dissimilarity between plots
+#### 2a. Using species presence/absence data, calculate pairwise similarity of plots based on the Bray-Curtis measure of dissimilarity. (Note: This is equal to 1- S, where S is the Sorensen similarity index presented in class.) R script already does this for you, but make sure you understand how to get there.
 
 ```{r}
 #First, aggregate subplot data
@@ -126,21 +118,19 @@ p3 <- apply(padat[25:36,],2,max)
 p4 <- apply(padat[37:48,],2,max)
 ```
 
-
-#### Create new matrix to calculate pairwise plot dissimilarity
-
 ```{r}
+# Create new matrix to calculate pairwise plot dissimilarity
+
 plots_spp <- rbind(p1,p2,p3,p4)
 ```
-
-#### Produce dissimilarity matrix
 
 ```{r}
 plots_bray_diss <- vegdist(plots_spp,method="bray")
 plots_bray_diss
 ```
 
-#### Analyze cover data
+#### 2b. Using species cover data, calculate pairwise dissimilarity of plots based on Euclidean distance. R script already does this for you, but make sure you understand how to get there
+
 ```{r}
 #Calculate area-weighted cover, total area sampled = 10 *0.25 + 2*2.5 = 7.5 sq m
 
@@ -154,8 +144,9 @@ p4_cov <- (2.5/7.5)*apply(covdat[37:46,],2,mean) +
 			(5/7.5)*apply(covdat[47:48,],2,mean)
 ```
 
-#### Analyze plot dissimilarity based on cover
 ```{r}
+# Analyze plot dissimilarity based on cover
+
 plots_cov <- rbind(p1_cov,p2_cov,p3_cov,p4_cov)
 plots_euclid_diss <- vegdist(plots_cov,method="euclidean")
 plots_hclust <- hclust(plots_euclid_diss,method="average")		#cluster analysis of plots (contrived)
@@ -163,48 +154,52 @@ plot(plots_hclust)
 plots_hclust_pa <- hclust(plots_bray_diss,method="average")
 plot(plots_hclust_pa)
 ```
-#### Repeat 2a, but for native species only
+
+#### 2c. Repeat 2a, but for native species only
 
 ```{r}
 
 ```
 
-
-
-#### Repeat 2b, but for native species only
+#### 2d. Repeat 2b, but for native species only
 
 ```{r}
 
 ```
 
-
-**Question:  Questions: Briefly discuss the patterns of plot dissimilarity based on P/A compared to cover data. How do they differ and why? Next, briefly discuss patterns of plot dissimilarity based on all species vs. native species only.**
+**Question: Questions: Briefly discuss the patterns of plot dissimilarity based on P/A compared to cover data. How do they differ and why? Next, briefly discuss patterns of plot dissimilarity based on all species vs. native species only.**
 
 **Answer: Your answer here.**
 
+## 3. Community Evenness
 
-## Community Evenness
+Here you will compare patterns of community diversity based on the Shannon index and Simpson index.
 
-
-#### Analyze plot diversity
+#### 3a. Calculate Shannon's H' Index for the plots using species cover data. R script does this for you
 
 ```{r}
 plots_shannon <- diversity(plots_cov,index="shannon") 	#shannon H'
-plots_simpson <- diversity(plots_cov,index="simpson")	#simpson diversity
-plots_richness <- specnumber(plots_cov)					#species richness
+
 ```
 
+#### 3b. Calculate Simpson's Index for the plots using species cover data. R script does this for you.
 
-#### Repeat 3a for native species only and for exotic species only 
+```{r}
+plots_simpson <- diversity(plots_cov,index="simpson")	#simpson diversity
+plots_richness <- specnumber(plots_cov)	#species richness
+```
+
+#### Repeat 3a for native species only and for exotic species only
+
 ```{r}
 
 ```
 
 #### Repeat 3b for native species only and for exotic species only.
+
 ```{r}
 
 ```
-
 
 **Question: Questions: How does the rank order of diversity among plots vary depending on whether you use the Shannon or Simpson index? How does the pattern of native species diversity compare to exotic species diversity?**
 
