@@ -13,7 +13,6 @@ The purpose of this exercise is to reinforce some of the field activities, readi
 -   File grassland_dat_pa.csv contains data from your first field trip. The rows are the individual subplots. Columns include plot number, subplot number, subplot area, and species presence (1) or absence (0) rating for 37 species recorded in the plots. By convention, species are abbreviated using the first two letters of the genus and first two letters of the species names.
 -   File grassland_dat_cover.csv is in the same format but records species cover rather than presence/absence.
 -   Full names and whether the species is native (1) or exotic (0) are provided on the worksheet grassland_common_species_ex1.csv
--   R scripts for reading in the data and using the vegan package to examine species accumulation curves, dissimilarity and diversity are included in the file analyze_grassland_dat.txt. You can execute (source) this file in R to get started.
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
@@ -43,6 +42,10 @@ padat <- grasspa[,4:40]		#plot x species P/A matrix in format for vegan analysis
 grasscov <- read.csv("data/grassland_dat_cover.csv",header=TRUE)
 covdat <- grasscov[,4:40]	#plot x species cover matrix in format for vegan analysis
 ```
+
+The `data` folder contains data from 2022, 2023, and 2024. If you want to explore other years of data, you can load them in using `read.csv("data/name_of_csv.csv", header = TRUE)`.
+
+------------------------------------------------------------------------
 
 1a. Plot the accumulated number of species recorded in the 10 subplots for each plot. (R script already does this for you).
 
@@ -102,9 +105,9 @@ plot(accum_allsubplots,xlab="subplots",ylab="species")
 
 **Question : Question. How do accumulation curves and estimated sizes of species pools compare for native compared to exotic species**
 
-**Answer: Your answer here.** .
+**Answer: Your answer here.**
 
-## 2. Communit Dissimilarity
+## 2. Community Dissimilarity
 
 There are many indices for calculating the similarity or dissimilarity of community samples. Here you will compare sample dissimilarity based on species presence-absence data vs. species cover data
 
@@ -189,13 +192,13 @@ plots_simpson <- diversity(plots_cov,index="simpson")	#simpson diversity
 plots_richness <- specnumber(plots_cov)	#species richness
 ```
 
-#### Repeat 3a for native species only and for exotic species only
+#### 3c. Repeat 3a for native species only and for exotic species only
 
 ```{r}
 
 ```
 
-#### Repeat 3b for native species only and for exotic species only.
+#### 3d. Repeat 3b for native species only and for exotic species only.
 
 ```{r}
 
